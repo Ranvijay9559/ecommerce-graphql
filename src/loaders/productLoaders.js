@@ -1,4 +1,3 @@
-// src/loaders/productLoader.js
 import DataLoader from "dataloader";
 import Product from "../models/Product.js";
 

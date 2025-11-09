@@ -1,4 +1,3 @@
-// src/loaders/categoryLoader.js
 import DataLoader from "dataloader";
 import Category from "../models/Category.js";
 
@@ -7,7 +6,7 @@ const createCategoryLoader = () =>
     const categories = await Category.find({ _id: { $in: ids } }).lean();
 
     const map = new Map(
-      categories.map((c) => [c._id.toString(), c]) // store direct lean docs
+      categories.map((c) => [c._id.toString(), c])
     );
 
     return ids.map((id) => map.get(id.toString()) || null);

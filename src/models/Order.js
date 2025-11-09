@@ -20,7 +20,6 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ Same pattern as Product schema
 orderSchema.virtual("id").get(function () {
   return this._id.toHexString();
 });

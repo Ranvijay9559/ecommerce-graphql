@@ -4,13 +4,17 @@ import CategoryForm from "./CategoryForm";
 
 const GET_CATEGORIES = gql`
   query GetCategories {
-    categories {
-      id
-      name
-      description
+    categories(limit: 50) {
+      totalCount
+      items {
+        id
+        name
+        description
+      }
     }
   }
 `;
+
 
 const ADD_CATEGORY = gql`
   mutation AddCategory($name: String!, $description: String) {
@@ -32,6 +36,7 @@ export default function ManageCategories() {
   const { data, loading, refetch } = useQuery(GET_CATEGORIES);
   const [addCategory] = useMutation(ADD_CATEGORY);
   const [deleteCategory] = useMutation(DELETE_CATEGORY);
+  const categories = data?.categories?.items ?? [];
 
   const [editing, setEditing] = useState(null);
 
@@ -68,7 +73,7 @@ export default function ManageCategories() {
         />
       )}
 
-      {data.categories.map((c) => (
+      {categories.map((c) => (
         <div key={c.id} className="border p-3 mb-2 rounded flex justify-between">
           <div>
             <p className="font-bold">{c.name}</p>

@@ -12,21 +12,17 @@ const productSchema = new mongoose.Schema({
   image: String,
 }, { timestamps: true });
 
-/* ✅ Text search index (for search/filter feature) */
 productSchema.index({ name: "text", description: "text" });
 
-/* ✅ Compound indexes for high-performance filtering & sorting */
 productSchema.index({ category: 1, price: 1, createdAt: -1 });
 productSchema.index({ inStock: 1, price: 1 });
 productSchema.index({ popularity: -1 });
 productSchema.index({ rating: -1 });
 
-/* ✅ Virtual ID for GraphQL */
 productSchema.virtual("id").get(function () {
   return this._id.toHexString();
 });
 
-/* ✅ Ensure virtuals work with toJSON & toObject */
 productSchema.set("toJSON", { virtuals: true });
 productSchema.set("toObject", { virtuals: true });
 productSchema.plugin(mongooseLeanVirtuals);

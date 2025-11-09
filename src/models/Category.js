@@ -15,7 +15,6 @@ categorySchema.virtual("id").get(function () {
 categorySchema.set("toJSON", { virtuals: true });
 categorySchema.set("toObject", { virtuals: true });
 
-// ✅ Only keep createdAt index (name already indexed by `unique`)
 categorySchema.index({ createdAt: -1 });
 
 export default mongoose.model("Category", categorySchema);

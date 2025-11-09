@@ -1,4 +1,3 @@
-// src/graphql/resolvers/productResolvers.js
 import Product from "../../models/Product.js";
 
 const productResolvers = {
@@ -25,7 +24,7 @@ const productResolvers = {
       }
 
       if (filter.search) {
-        query.$text = { $search: filter.search };
+        query.name = { $regex: filter.search, $options: "i" };
       }
 
       const sortObj = { [sort.field]: sort.order === "desc" ? -1 : 1 };

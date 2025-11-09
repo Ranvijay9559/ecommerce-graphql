@@ -11,12 +11,10 @@ const userSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
-// ✅ Virtual ID (important for GraphQL)
 userSchema.virtual("id").get(function () {
   return this._id.toHexString();
 });
 
-// ✅ Ensure virtuals appear in JSON & GraphQL responses
 userSchema.set("toJSON", { virtuals: true });
 userSchema.set("toObject", { virtuals: true });
 

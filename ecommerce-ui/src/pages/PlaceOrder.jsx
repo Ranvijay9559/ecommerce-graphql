@@ -15,7 +15,9 @@ export default function PlaceOrder() {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
 
-  const [placeOrder, { loading, error }] = useMutation(PLACE_ORDER);
+  const [placeOrder, { loading, error }] = useMutation(PLACE_ORDER, {
+    refetchQueries: ["GetMyOrders"],
+  });
 
   const handleOrder = async () => {
     await placeOrder({ variables: { items: [{ productId, quantity }] } });

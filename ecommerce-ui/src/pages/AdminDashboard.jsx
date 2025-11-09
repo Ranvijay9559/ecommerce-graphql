@@ -9,7 +9,6 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // ✅ Redirect non-admins
   useEffect(() => {
     if (!token) return navigate("/login");
     const role = JSON.parse(atob(token.split(".")[1])).role;
@@ -26,10 +25,11 @@ export default function AdminDashboard() {
     <div className="flex h-screen bg-slate-100">
 
       {/* SIDEBAR */}
-      <aside className="w-60 bg-slate-900 text-white flex flex-col p-6">
-        <h2 className="text-2xl font-bold mb-8">Admin Panel</h2>
+      <aside className="w-60 bg-slate-900 text-white flex flex-col p-6 min-h-[calc(100vh-64px)]">
+        <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
 
-        <nav className="flex-1 flex flex-col gap-2">
+        {/* MENU SCROLLABLE AREA */}
+        <nav className="flex-1 flex flex-col gap-2 overflow-y-auto pr-1">
           {menuItems.map((item) => (
             <Link
               key={item.path}
@@ -45,8 +45,9 @@ export default function AdminDashboard() {
           ))}
         </nav>
 
+        {/* ✅ FIXED LOGOUT BUTTON AT BOTTOM */}
         <button
-          className="mt-auto bg-red-600 hover:bg-red-700 text-white py-2 rounded transition"
+          className="bg-red-600 hover:bg-red-700 text-white py-2 rounded transition mt-4"
           onClick={() => {
             localStorage.removeItem("token");
             navigate("/login");
@@ -62,7 +63,7 @@ export default function AdminDashboard() {
           <Route path="products" element={<ManageProducts />} />
           <Route path="orders" element={<ManageOrders />} />
           <Route path="categories" element={<ManageCategories />} />
-          <Route path="*" element={<p className="text-gray-600">Select a menu option...</p>} />
+          <Route path="*" element={<ManageProducts />} />
         </Routes>
       </main>
     </div>

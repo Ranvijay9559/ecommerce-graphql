@@ -39,13 +39,16 @@ const orderTypeDefs = gql`
       limit: Int = 10
       offset: Int = 0
       sort: OrderSortInput
-    ): OrderPage!                 # ✅ Paginated orders
+    ): OrderPage!                 
     order(id: ID!): Order
   }
 
   type Mutation {
     placeOrder(items: [OrderItemInput!]!): Order!        # Auth: customer
     updateOrderStatus(id: ID!, status: String!): Order!  # Auth: admin only
+    cancelMyOrder(id: ID!): Order! 
+    deleteMyOrder(id: ID!): Boolean
+    deleteOrder(id: ID!): Boolean
   }
 `;
 

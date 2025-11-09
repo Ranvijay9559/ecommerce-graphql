@@ -3,7 +3,6 @@ import { hashPassword, comparePassword, generateToken } from "../../utils/auth.j
 
 const userResolvers = {
   Query: {
-    // ✅ Admin-only user listing with pagination
     users: async (_, { limit = 20, offset = 0 }, { user }) => {
       if (!user || user.role !== "admin") {
         throw new Error("Unauthorized — Admin access required");
@@ -21,7 +20,6 @@ const userResolvers = {
       return { items, totalCount };
     },
 
-    // ✅ Logged-in user info
     me: async (_, __, { user }) => {
       if (!user) throw new Error("Not authenticated");
       return await User.findById(user.id).lean({ virtuals: true });
@@ -29,7 +27,6 @@ const userResolvers = {
   },
 
   Mutation: {
-    // 🧩 Register
     registerUser: async (_, { input }) => {
       const existing = await User.findOne({ email: input.email });
       if (existing) throw new Error("Email already registered");
@@ -40,14 +37,13 @@ const userResolvers = {
         name: input.name,
         email: input.email,
         password: hashedPassword,
-        role: "customer", // ✅ default role
+        role: "customer",
       });
 
       const token = generateToken(newUser);
       return { token, user: newUser.toObject() };
     },
 
-    // 🔑 Login
     loginUser: async (_, { input }) => {
       const user = await User.findOne({ email: input.email });
       if (!user) throw new Error("Invalid credentials");

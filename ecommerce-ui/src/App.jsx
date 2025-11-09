@@ -1,4 +1,4 @@
-import { Routes, Route, NavLink, useNavigate } from "react-router-dom";
+import { Routes, Route, NavLink, useNavigate, Link } from "react-router-dom";
 import Products from "./pages/Products";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -21,14 +21,24 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-gray-800 flex flex-col">
 
-      {/* ✅ Top Navigation */}
+      {/* Top Navigation */}
       <nav className="bg-white shadow-sm border-b px-6 py-3 flex justify-between items-center sticky top-0 z-50">
-        <h1 className="text-xl font-bold text-blue-600 select-none">🛍️ MyShop</h1>
+        <h1 className="text-xl font-bold text-blue-600 select-none">
+          <Link to="/" className="hover:opacity-80 transition">
+            🛍️ MyShop
+          </Link>
+        </h1>
 
         <div className="flex gap-2 items-center">
           <NavItem to="/">Products</NavItem>
 
-          {token && <NavItem to="/orders">My Orders</NavItem>}
+          {token && !isAdmin && <NavItem to="/orders">My Orders</NavItem>}
+
+          {isAdmin && (
+            <NavItem to="/admin" className="text-purple-600 font-semibold">
+              Admin
+            </NavItem>
+          )}
 
           {!token ? (
             <>
@@ -38,21 +48,15 @@ export default function App() {
           ) : (
             <button
               onClick={logout}
-              className="px-3 py-1 text-sm rounded bg-red-500 hover:bg-red-600 text-white transition"
+              className="px-3 py-1 text-sm rounded bg-red-500 hover:bg-red-600 text-white transition cursor-pointer"
             >
               Logout
             </button>
           )}
-
-          {isAdmin && (
-            <NavItem to="/admin" className="text-purple-600 font-semibold">
-              Admin
-            </NavItem>
-          )}
         </div>
       </nav>
 
-      {/* ✅ ROUTES */}
+      {/* ROUTES */}
       <div className="flex-1">
         <Routes>
           {/* Customer Pages */}
@@ -62,7 +66,7 @@ export default function App() {
           <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
           <Route path="/register" element={<PageWrapper><Register /></PageWrapper>} />
 
-          {/* Admin (No wrapper → full width dashboard layout) */}
+          {/* Admin DashBoard */}
           <Route path="/admin/*" element={<AdminDashboard />} />
         </Routes>
       </div>
@@ -70,7 +74,6 @@ export default function App() {
   );
 }
 
-/* ✅ Small nav button */
 function NavItem({ to, children }) {
   return (
     <NavLink
@@ -88,7 +91,6 @@ function NavItem({ to, children }) {
   );
 }
 
-/* ✅ Page Wrapper for Regular Screens */
 function PageWrapper({ children }) {
   return <div className="p-6 max-w-5xl mx-auto">{children}</div>;
 }

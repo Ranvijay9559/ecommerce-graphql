@@ -87,6 +87,60 @@ const orderResolvers = {
       const updated = await Order.findByIdAndUpdate(id, { status }, { new: true }).lean({ virtuals: true });
       return updated ? { ...updated, id: updated._id.toString() } : null;
     },
+
+    cancelMyOrder: async (_, { id }, { user }) => {
+      if (!user) throw new Error("Not authenticated");
+
+      const order = await Order.findById(id);
+      if (!order) throw new Error("Order not found");
+
+      if (order.user.toString() !== user.id) {
+        throw new Error("Unauthorized");
+      }
+
+      if (order.status !== "pending") {
+        throw new Error("Only pending orders can be cancelled");
+      }
+
+      order.status = "cancelled";
+      await order.save();
+      return order.toObject();
+    },
+
+    deleteMyOrder: async (_, { id }, { user }) => {
+      if (!user) throw new Error("Unauthorized");
+
+      const order = await Order.findById(id).populate("items.product");
+      if (!order) throw new Error("Order not found");
+
+      if (order.user.toString() !== user.id) {
+        throw new Error("You can delete only your own orders.");
+      }
+
+      const hasInvalidItem = order.items.some(i => !i.product);
+
+      if (order.status !== "cancelled" && !hasInvalidItem) {
+        throw new Error("You can delete only cancelled or invalid orders.");
+      }
+
+      await Order.findByIdAndDelete(id);
+      return true;
+    },
+
+    deleteOrder: async (_, { id }, { user }) => {
+      if (!user || user.role !== "admin") throw new Error("Unauthorized");
+
+      const order = await Order.findById(id);
+      if (!order) throw new Error("Order not found");
+
+      if (order.status !== "cancelled") {
+        throw new Error("Admin can delete only cancelled orders.");
+      }
+
+      await Order.findByIdAndDelete(id);
+      return true;
+    },
+
   },
 
   OrderItem: {

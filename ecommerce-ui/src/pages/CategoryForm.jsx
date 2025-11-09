@@ -4,7 +4,6 @@ export default function CategoryForm({ category, onSave, onCancel }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
-  // ✅ Ensure controlled inputs always have values
   useEffect(() => {
     setName(category?.name ?? "");
     setDescription(category?.description ?? "");
